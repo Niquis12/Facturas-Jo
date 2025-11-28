@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="../Backend/app.js" defer></script>
+
+</head>
+<body>
+
+    <main>
+       
+        <form action="submit" method="POST" style="display:contents;" id="registro-form">
+            
+            <div>
+                <label for="nombre-empresa">Nombre</label>
+                <input type="text" id="nombre-empresa" placeholder="Empresa Nombre" required>
+            </div>
+
+            <div>
+                <label for="fecha-emision">Fecha</label>
+                <input type="date" id="fecha-emision" required>
+            </div>
+
+            <div>
+                <label for="fecha-vencimiento">Fecha vencimiento</label>
+                <select name="Fecha de vencimiento" id="fecha-vencimiento" required><option value="60">60</option>
+                <option value="30">30</option></select>
+                
+            </div>
+
+            <div>
+                <label for="monto">Monto</label>
+                <input type="text" id="monto" placeholder="$ 0.00" required>
+            </div>
+            
+            <button type="submit">➕ Registrar Datos</button>
+            
+        </form>
+
+    </main>
+    <div style="margin: 20px 0;">
+        <h2>Detalle de Registros</h2>
+    </div>
+
+    <table id="tablaFacturas">
+        <thead>
+            <tr>
+            <th>N°</th>
+            <th>Monto</th>
+            <th>Vencimiento</th>
+            <th>Estado</th>
+            <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</body>
+</html>

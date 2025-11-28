@@ -1,0 +1,169 @@
+/* Estilos generales */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f7f9;
+    margin: 20px;
+}
+
+/* Estilos para el contenedor principal del formulario */
+/* Estilos para el contenedor principal (MAIN) */
+main {
+    background-color: #ffffff;
+    padding: 30px; /* Aumentamos el padding para más espacio */
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Sombra más pronunciada */
+    margin-bottom: 30px;
+    
+    /* Usamos Flexbox para organizar el formulario */
+    display: flex;
+    flex-wrap: wrap; /* Permite que los elementos salten de línea */
+    gap: 20px; /* Espacio entre cada campo */
+    align-items: flex-end; /* Alinea el botón con los inputs */
+}
+
+/* Estilo para cada grupo de label/input */
+main > div {
+    flex-grow: 1; /* Permite que los campos se estiren */
+    min-width: 200px; /* Mínimo ancho para que no se vean muy pequeños */
+}
+
+/* Estilos para etiquetas y campos de entrada */
+label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+    color: #495057; /* Un gris oscuro para el texto */
+    font-size: 0.9em;
+}
+input[type="number"],
+input[type="text"],
+input[type="date"] {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    box-sizing: border-box; 
+    transition: all 0.3s ease; /* Transición suave para el enfoque */
+    font-size: 1em;
+}
+
+input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); /* Sombra suave azul al enfocar */
+    outline: none;
+}
+
+/* Estilos para el Botón de Envío */
+button[type="submit"] {
+    /* Estilos del botón */
+    background-color: #28a745; /* Color verde para la acción principal */
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 25px;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s;
+    height: 40px; /* Asegura que el botón sea tan alto como los inputs */
+    margin-bottom: 0; /* Asegura que esté alineado en la base */
+}
+
+/* Efecto Hover y Active del Botón */
+button[type="submit"]:hover {
+    background-color: #218838; /* Verde un poco más oscuro al pasar el ratón */
+}
+
+button[type="submit"]:active {
+    transform: translateY(1px); /* Pequeño efecto de "presionar" */
+}
+
+select{
+    padding: 0.625rem 1.25rem;
+    border: 0;
+    border-radius: 0.5rem;
+    border-color: #0d0d0d;
+    font-size: 1rem;
+    color: #ddd;
+    cursor: pointer;
+    transition: all 0.2s;
+    appearance: none;
+    padding-right: 2.5rem;
+    margin-top: 2px;
+}
+
+/* Estilos para la tabla */
+table {
+    width: 100%;
+    border-collapse: collapse; /* Elimina el doble borde */
+    margin-top: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden; /* Asegura que los bordes redondeados se apliquen */
+}
+
+th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Estilos para el encabezado de la tabla */
+thead {
+    background-color: #007bff;
+    color: white;
+}
+
+th {
+    font-weight: bold;
+}
+
+/* Estilos para filas impares del cuerpo (rayado) */
+tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* Efecto al pasar el ratón */
+tbody tr:hover {
+    background-color: #e9ecef;
+}
+
+/* Estilos para el pie de página de la tabla */
+tfoot td {
+    background-color: #e2e6ea;
+    font-style: italic;
+    text-align: center;
+    padding: 10px;
+}
+
+/* Estilo base para las celdas de estado */
+.estado-celda {
+    font-weight: bold;
+    text-transform: uppercase;
+    padding: 5px 10px;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 0.9em;
+}
+
+
+.estado-pendiente {
+    background-color: #d4edda; /* Fondo muy claro */
+    color: #d8d834; /* Texto oscuro */
+    border: 1px solid #c3e6cb;
+}
+
+/* 🟡 Estado: Pendiente (Azul o Amarillo, informativo/advertencia) */
+.estado-pendiente {
+    background-color: #cce5ff; /* Fondo azul claro */
+    color: #004085; /* Texto azul oscuro */
+    border: 1px solid #b8daff;
+}
+
+/* 🔴 Estado: Vencido (Rojo, peligro/alerta) */
+.estado-vencido {
+    background-color: #f8d7da; /* Fondo rojo claro */
+    color: #721c24; /* Texto rojo oscuro */
+    border: 1px solid #f5c6cb;
+}

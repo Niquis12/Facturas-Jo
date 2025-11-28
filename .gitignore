@@ -1,0 +1,11 @@
+# Dependencias de Node
+/backend/node_modules
+/frontend/node_modules
+
+# Archivos de configuración locales
+.env
+*.log
+
+# Archivos de paquetes
+package-lock.json
+npm-debug.log
