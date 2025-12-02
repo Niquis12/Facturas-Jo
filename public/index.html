@@ -5,14 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="style.css">
-    <script src="../Backend/app.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script type="module" src="/public/app.js" defer></script>
 
 </head>
 <body>
 
     <main>
        
-        <form action="submit" method="POST" style="display:contents;" id="registro-form">
+        <form style="display:contents;" id="registro-form">
             
             <div>
                 <label for="nombre-empresa">Nombre</label>
@@ -26,8 +27,8 @@
 
             <div>
                 <label for="fecha-vencimiento">Fecha vencimiento</label>
-                <select name="Fecha de vencimiento" id="fecha-vencimiento" required><option value="60">60</option>
-                <option value="30">30</option></select>
+                
+                <input type="date" id="fecha-vencimiento" required>
                 
             </div>
 
@@ -49,7 +50,9 @@
         <thead>
             <tr>
             <th>N°</th>
+            <th>Empresa</th>
             <th>Monto</th>
+            <th>Fecha</th>
             <th>Vencimiento</th>
             <th>Estado</th>
             <th>Acción</th>
