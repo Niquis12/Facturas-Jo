@@ -2,13 +2,15 @@
 
 const { createClient } = window.supabase;
 
-const SUPABASE_URL = 'https://bbictwfxuqjfkljoddof.supabase.co'; 
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJiaWN0d2Z4dXFqZmtsam9kZG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE5NTMwMDQsImV4cCI6MjA3NzUyOTAwNH0.J6ilN4ucs4eEKD0P5OJvD3sKPTQ6bKCGekMqmpTwqiE'; 
+const SUPABASE_URL = 'https://dquiwgkifddppehhoegj.supabase.co'; 
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxdWl3Z2tpZmRkcHBlaGhvZWdqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3Nzg2NDYsImV4cCI6MjA4MDM1NDY0Nn0.5ZydrNb_dMjbTmAx3yuXM9ZXG-58eKhoXLntvnEBYgs'; 
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // 🚨 CORRECCIÓN 1: Sensibilidad a Mayúsculas
-const TABLA_FACTURAS = 'facturas'; 
+const TABLA_FACTURAS = 'factura'; 
+
+
 
 function normalizarFecha(dateInput) {
     // 🛑 CORRECCIÓN CLAVE: Convertir la entrada a string si es un objeto Date
@@ -36,44 +38,47 @@ function normalizarFecha(dateInput) {
     return localDate;
 }
 // cargar facturas al entrar
-document.addEventListener("DOMContentLoaded", cargarFacturas);
 
-// enviar formulario
-document.getElementById("registro-form").addEventListener("submit", async (e) => {
-    e.preventDefault();
+function iniciarApp(){
+    cargarFacturas();
 
-    // Asumiendo IDs de inputs correctos:
-    const nombre = document.getElementById("nombre-empresa").value;
-    const fechaEmision = document.getElementById("fecha-emision").value; // Input para fecha
-    const diasVencimiento = document.getElementById("fecha-vencimiento").value; // Input para días
-    const monto = document.getElementById("monto").value;
 
-    const factura = {
-        empresa: nombre,
-        
-        // 🚨 CORRECCIÓN 2: Usar 'fecha' (emisión) - ¡Coincide con tu DB!
-        "fecha": fechaEmision, 
-        
-        // 🚨 CORRECCIÓN 3: Usar 'vencimiento' - ¡Coincide con tu DB!
-        "vencimiento": diasVencimiento, 
-        
-        monto: monto,
-        estado: "emitida" 
-    };
 
-    const { error } = await supabase
-        .from(TABLA_FACTURAS)
-        .insert([factura]);
+    document.getElementById("registro-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+    
+        // Asumiendo IDs de inputs correctos:
+        const empresa = document.getElementById("nombre-empresa").value;
+        const fechaEmision = document.getElementById("fecha-emision").value; // Input para fecha
+        const monto = document.getElementById("monto").value;
+    
+        const factura = {
+            nombre: empresa,
+            
+            // 🚨 CORRECCIÓN 2: Usar 'fecha' (emisión) - ¡Coincide con tu DB!
+            "fecha": fechaEmision, 
+            
+            // 🚨 CORRECCIÓN 3: Usar 'vencimiento' - ¡Coincide con tu DB! 
+            
+            monto: monto,
+            estado: "emitida" 
+        };
+    
+        const { error } = await supabase
+            .from(TABLA_FACTURAS)
+            .insert([factura]);
+    
+        if (error) {
+            console.error("Error al registrar factura en Supabase:", error);
+            alert("Hubo un error al registrar la factura: " + error.message);
+        } else {
+            document.getElementById("registro-form").reset();
+            cargarFacturas();
+        }
+    });
+} 
 
-    if (error) {
-        console.error("Error al registrar factura en Supabase:", error);
-        alert("Hubo un error al registrar la factura: " + error.message);
-    } else {
-        document.getElementById("registro-form").reset();
-        cargarFacturas();
-    }
-});
-
+document.addEventListener("DOMContentLoaded", iniciarApp);
 
 
 // obtener facturas
@@ -98,28 +103,32 @@ async function cargarFacturas() {
         const hoy = normalizarFecha(new Date().toISOString().split('T')[0]); 
 
     // 🚨 CORRECCIÓN 3: Pasar el string de la DB (f.vencimiento)
-        const fechaVencimiento = normalizarFecha(f.vencimiento); 
-    
-    
-         
+        const fechaPendiente = normalizarFecha(f.fecha); 
+        fechaPendiente.setDate(fechaPendiente.getDate() + 30);
+        fechaPendiente.setHours(0, 0, 0, 0);
+        
+        
+        const fechaFormateada = formatearFechaAR(f.fecha);
+        
 
     // 1. Calcular el punto de corte para "Por vencer/Pendiente" (30 días antes)
         
-        const plazoCritico = new Date(fechaVencimiento);
-        plazoCritico.setDate(fechaVencimiento.getDate() - 10);
+        const plazoCritico = new Date(fechaPendiente);
+        plazoCritico.setDate(fechaPendiente.getDate() + 30);
         plazoCritico.setHours(0, 0, 0, 0);
         let estado = f.estado; // Estado original de la factura desde la DB
+        
         // ----------------------------------------------------
 
     // LÓGICA DE ESTADO DINÁMICO (Solo si NO está marcado como pagado)
         if (estado !== "pagado") {
             
             // 🛑 Criterio 1: VENCIDO (Hoy es igual o posterior a la fecha de vencimiento)
-            if (hoy.getTime() > fechaVencimiento.getTime()) {
+            if (hoy.getTime() > plazoCritico.getTime()) {
                 estado = "vencida"; // 🚨 Aquí cambiamos la variable 'estado' para la visualización
                 
             // 🟡 Criterio 2: PENDIENTE/POR VENCER (La factura vence en los próximos 30 días)
-            } else if (hoy.getTime() >= plazoCritico.getTime()) {
+            } else if (hoy.getTime() >= fechaPendiente.getTime()) {
                 estado = "pendiente"; 
                 
             // 🟢 Criterio 3: EMITIDA (Falta más de 30 días para vencer)
@@ -135,19 +144,34 @@ async function cargarFacturas() {
         const tr = document.createElement("tr");
         tr.innerHTML = `
             <td>${f.id}</td>
-            <td>${f.empresa}</td>
+            <td>${f.nombre}</td>
             <td>$ ${parseFloat(f.monto).toFixed(2)}</td>
-            <td>${f.fecha}</td>
-            <td>${fechaVencimiento.toLocaleDateString('es-Es')}</td>
+            <td>${fechaFormateada}</td>
             <td class='estado-celda' id="${estadoClase}">${estado.toUpperCase()}</td>
             <td>
-                ${estado === "pendiente"|| estado === "emitida" 
+                ${estado === "pendiente"|| estado === "emitida" || estado === "vencida" 
                     ? `<button class="btn-pagar" onclick="pagar(${f.id})">Marcar Pagado</button>`
                     : "—"}
             </td>
         `;
         tbody.appendChild(tr);
     });
+}
+
+function formatearFechaAR(fechaString) {
+    if (!fechaString) return '';
+    // Crea un objeto Date. Usar el string aaaa-mm-dd directamente funciona
+    // bien para fechas sin hora en JS.
+    const fechaObj = new Date(fechaString); 
+    fechaObj.setDate(fechaObj.getDate() + 1);
+    
+    // Si la fecha es inválida, retorna vacío
+    if (isNaN(fechaObj.getTime())) {
+        return 'Fecha Inválida';
+    }
+    
+    // Formato de Argentina (dd/mm/aaaa)
+    return fechaObj.toLocaleDateString('es-AR');
 }
 
 // marcar como pagado
