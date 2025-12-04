@@ -51,9 +51,11 @@ function iniciarApp(){
         const empresa = document.getElementById("nombre-empresa").value;
         const fechaEmision = document.getElementById("fecha-emision").value; // Input para fecha
         const monto = document.getElementById("monto").value;
-    
+        const numeroFactura = document.getElementById("numero-factura").value
+
         const factura = {
             nombre: empresa,
+            
             
             // 🚨 CORRECCIÓN 2: Usar 'fecha' (emisión) - ¡Coincide con tu DB!
             "fecha": fechaEmision, 
@@ -61,7 +63,8 @@ function iniciarApp(){
             // 🚨 CORRECCIÓN 3: Usar 'vencimiento' - ¡Coincide con tu DB! 
             
             monto: monto,
-            estado: "emitida" 
+            estado: "emitida", 
+            factura : numeroFactura,
         };
     
         const { error } = await supabase
@@ -79,6 +82,22 @@ function iniciarApp(){
 } 
 
 document.addEventListener("DOMContentLoaded", iniciarApp);
+
+function formatearMontoAR(monto) {
+    if (isNaN(monto) || monto === null) return '0,00';
+    
+    // Convertir a número por si viene como string
+    const numeroMonto = parseFloat(monto);
+
+    // Crea un objeto formateador para el locale 'es-AR' (Español - Argentina)
+    const formatter = new Intl.NumberFormat('es-AR', {
+        minimumFractionDigits: 2, // Asegura que siempre haya al menos dos decimales
+        maximumFractionDigits: 2  // Asegura que no haya más de dos decimales
+    });
+
+    // Formatea el número
+    return formatter.format(numeroMonto); 
+}
 
 
 // obtener facturas
@@ -137,15 +156,15 @@ async function cargarFacturas() {
             }
         }
     
-        
+        let montoformateado = formatearMontoAR(f.monto);
 
         const estadoClase = `estado-${estado}`;
-
+    
         const tr = document.createElement("tr");
         tr.innerHTML = `
-            <td>${f.id}</td>
+            <td>${f.factura}</td>
             <td>${f.nombre}</td>
-            <td>$ ${parseFloat(f.monto).toFixed(2)}</td>
+            <td>$ ${montoformateado}</td>
             <td>${fechaFormateada}</td>
             <td class='estado-celda' id="${estadoClase}">${estado.toUpperCase()}</td>
             <td>
